@@ -1,0 +1,112 @@
+[
+  {
+    "id": "back_01_dark_neon_sakura_street",
+    "prompt": "masterpiece, best quality, ultra-detailed, anime scenery, background art, Makoto Shinkai style, moody dark night Tokyo intersection, dark shadows, giant glowing neon cherry blossom tree emitting radiant magenta light, floating glowing sakura petals, wet asphalt road with vivid pink neon reflections, ultra-detailed urban architecture, cinematic lighting, high contrast",
+    "negative_prompt": "(worst quality, low quality:1.4), (bad anatomy:1.2), blurry, deformed, disfigured, text, watermark, signature, lowres, oversaturated, photorealistic, 3d render",
+    "output_file": "back_01_dark_neon_sakura_street.png",
+    "width": 1920,
+    "height": 1080,
+    "steps": 25,
+    "guidance_scale": 6.5,
+    "seed": 5001
+  },
+  {
+    "id": "back_02_dark_shrine_torii_neon_bloom",
+    "prompt": "masterpiece, best quality, ultra-detailed, anime scenery, background art, Makoto Shinkai style, ancient Japanese shrine steps at midnight, misty, dramatic shadows, giant ancient cherry blossom tree illuminated by neon pink and violet light, stone lanterns, wet dark stone pavement reflecting bright neon petals, atmospheric lighting",
+    "negative_prompt": "(worst quality, low quality:1.4), (bad anatomy:1.2), blurry, deformed, disfigured, text, watermark, signature, lowres, oversaturated, photorealistic, 3d render",
+    "output_file": "back_02_dark_shrine_torii_neon_bloom.png",
+    "width": 1920,
+    "height": 1080,
+    "steps": 25,
+    "guidance_scale": 6.5,
+    "seed": 5002
+  },
+  {
+    "id": "back_03_dark_cyber_canal_river",
+    "prompt": "masterpiece, best quality, ultra-detailed, anime scenery, background art, Makoto Shinkai style, night scene of Meguro river canal, pitch black water rippling with intense magenta neon reflections, arching cherry blossom trees glowing with vivid electric pink neon bloom, dark urban night, streetlamps in background, cinematic lighting",
+    "negative_prompt": "(worst quality, low quality:1.4), (bad anatomy:1.2), blurry, deformed, disfigured, text, watermark, signature, lowres, oversaturated, photorealistic, 3d render",
+    "output_file": "back_03_dark_cyber_canal_river.png",
+    "width": 1920,
+    "height": 1080,
+    "steps": 25,
+    "guidance_scale": 6.5,
+    "seed": 5003
+  },
+  {
+    "id": "back_04_lone_neon_sakura_ruins",
+    "prompt": "masterpiece, best quality, ultra-detailed, anime scenery, background art, Makoto Shinkai style, lone massive weeping cherry tree glowing with incandescent neon fuchsia light, standing in a dark deserted industrial lot, deep black shadows, damp cracked concrete reflecting sharp neon light, swarms of glowing pink petals drifting like embers into the dark sky, dramatic volumetric lighting",
+    "negative_prompt": "(worst quality, low quality:1.4), (bad anatomy:1.2), blurry, deformed, disfigured, text, watermark, signature, lowres, oversaturated, photorealistic, 3d render",
+    "output_file": "back_04_lone_neon_sakura_ruins.png",
+    "width": 1920,
+    "height": 1080,
+    "steps": 25,
+    "guidance_scale": 6.5,
+    "seed": 5004
+  },
+  {
+    "id": "back_05_traditional_dark_zen_garden",
+    "prompt": "masterpiece, best quality, ultra-detailed, anime scenery, background art, Makoto Shinkai style, traditional dark Japanese zen garden surrounded by midnight darkness, raked dark gravel, wet boulders, centered on a miniature cherry blossom tree radiating piercing neon pink glow, neon light grazing the dark wooden engawa veranda, quiet nocturnal atmosphere, cinematic lighting",
+    "negative_prompt": "(worst quality, low quality:1.4), (bad anatomy:1.2), blurry, deformed, disfigured, text, watermark, signature, lowres, oversaturated, photorealistic, 3d render",
+    "output_file": "back_05_traditional_dark_zen_garden.png",
+    "width": 1920,
+    "height": 1080,
+    "steps": 25,
+    "guidance_scale": 6.5,
+    "seed": 5005
+  },
+  {
+    "id": "back_06_narrow_rainy_backalley",
+    "prompt": "masterpiece, best quality, ultra-detailed, anime scenery, background art, Makoto Shinkai style, narrow Shibuya back-alley at 2 AM, heavy rain, dark shadowy buildings, low-key lighting, overhead cherry blossom branch burning with neon pink light, petals stuck to dark wet ground, glossy puddle reflections mirroring the bright pink glow, cinematic atmosphere",
+    "negative_prompt": "(worst quality, low quality:1.4), (bad anatomy:1.2), blurry, deformed, disfigured, text, watermark, signature, lowres, oversaturated, photorealistic, 3d render",
+    "output_file": "back_06_narrow_rainy_backalley.png",
+    "width": 1920,
+    "height": 1080,
+    "steps": 25,
+    "guidance_scale": 6.5,
+    "seed": 5006
+  },
+  {
+    "id": "back_07_dark_rooftop_overlook",
+    "prompt": "masterpiece, best quality, ultra-detailed, anime scenery, background art, Makoto Shinkai style, wet rooftop helipad on a skyscraper at rainy midnight, overlooking an atmospheric dark city with distant glowing neon lights, potted cherry blossom tree glowing with radiant magenta neon light, neon petals scattered across puddle-strewn dark asphalt, sharp details, cinematic lighting",
+    "negative_prompt": "(worst quality, low quality:1.4), (bad anatomy:1.2), blurry, deformed, disfigured, text, watermark, signature, lowres, oversaturated, photorealistic, 3d render",
+    "output_file": "back_07_dark_rooftop_overlook.png",
+    "width": 1920,
+    "height": 1080,
+    "steps": 25,
+    "guidance_scale": 6.5,
+    "seed": 5007
+  },
+  {
+    "id": "back_08_railroad_crossing_dark_neon",
+    "prompt": "masterpiece, best quality, ultra-detailed, anime scenery, background art, Makoto Shinkai style, rural Japanese railroad crossing immersed in pitch black night, rusty rails, signal light, wild cherry blossom tree overhead glowing with brilliant electric pink neon light, dark wet gravel and steel rails gleaming with magenta highlights, floating glowing petals, moody cinematic atmosphere",
+    "negative_prompt": "(worst quality, low quality:1.4), (bad anatomy:1.2), blurry, deformed, disfigured, text, watermark, signature, lowres, oversaturated, photorealistic, 3d render",
+    "output_file": "back_08_railroad_crossing_dark_neon.png",
+    "width": 1920,
+    "height": 1080,
+    "steps": 25,
+    "guidance_scale": 6.5,
+    "seed": 5008
+  },
+  {
+    "id": "back_09_waterfall_dark_grotto",
+    "prompt": "masterpiece, best quality, ultra-detailed, anime scenery, background art, Makoto Shinkai style, cavernous gorge at night, black wet basalt rock walls, misty waterfall plunging into dark pool, ancient cherry blossom tree on rock ledge shining with supernatural neon magenta luminance, glowing petals drifting over dark turbulent water, moody chiaroscuro lighting",
+    "negative_prompt": "(worst quality, low quality:1.4), (bad anatomy:1.2), blurry, deformed, disfigured, text, watermark, signature, lowres, oversaturated, photorealistic, 3d render",
+    "output_file": "back_09_waterfall_dark_grotto.png",
+    "width": 1920,
+    "height": 1080,
+    "steps": 25,
+    "guidance_scale": 6.5,
+    "seed": 5009
+  },
+  {
+    "id": "back_10_overcast_bridge_storm_petals",
+    "prompt": "masterpiece, best quality, ultra-detailed, anime scenery, background art, Makoto Shinkai style, modern bridge over dark bay during midnight thunderstorm, deep pitch-black sky, high contrast, row of cherry blossom trees intensely glowing with electric neon pink light, violent wind whipping glowing petals across the wet dark road surface, cinematic lighting",
+    "negative_prompt": "(worst quality, low quality:1.4), (bad anatomy:1.2), blurry, deformed, disfigured, text, watermark, signature, lowres, oversaturated, photorealistic, 3d render",
+    "output_file": "back_10_overcast_bridge_storm_petals.png",
+    "width": 1920,
+    "height": 1080,
+    "steps": 25,
+    "guidance_scale": 6.5,
+    "seed": 5010
+  }
+]

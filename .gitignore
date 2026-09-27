@@ -1,0 +1,35 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual Environments
+.ve/
+venv/
+.venv/
+env/
+
+# Output images (keep directory structure via .gitkeep)
+outputs/*
+!outputs/.gitkeep
+
+# Model weights and checkpoints if stored locally
+*.safetensors
+*.ckpt
+*.pt
+*.bin
+
+# Logs and databases
+*.log
+*.sqlite3
+
+# Editor and OS files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Security
+.env
+.env.*
+*.key
