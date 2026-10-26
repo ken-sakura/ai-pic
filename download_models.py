@@ -10,7 +10,8 @@ import sys
 import torch
 from diffusers import AutoencoderKL, StableDiffusionPipeline
 
-DEFAULT_MODEL_ID = "Lykon/AnyLoRA"
+# DreamShaper v8 の公式リポジトリID
+DEFAULT_MODEL_ID = "Lykon/dreamshaper-8"
 DEFAULT_VAE_ID = "stabilityai/sd-vae-ft-mse"
 
 
@@ -53,7 +54,8 @@ def main():
         try:
             vae = AutoencoderKL.from_pretrained(
                 args.vae_id,
-                torch_dtype=torch.float32,
+                torch_dtype=torch.float16,
+                use_safetensors=True,
             )
             print("      ✓ VAE successfully loaded and cached.")
         except Exception as e:
@@ -65,7 +67,8 @@ def main():
         _ = StableDiffusionPipeline.from_pretrained(
             args.model_id,
             vae=vae,
-            torch_dtype=torch.float32,
+            torch_dtype=torch.float16,
+            use_safetensors=True,
             safety_checker=None,
         )
         print("      ✓ Pipeline successfully loaded and cached.")

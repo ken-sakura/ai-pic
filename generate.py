@@ -25,7 +25,7 @@ DEFAULT_CONFIG_PATH = BASE_DIR / "configs" / "tasks.json"
 FALLBACK_CONFIG_PATH = BASE_DIR / "tasks.json"
 DEFAULT_OUTPUT_DIR = BASE_DIR / "outputs"
 
-MODEL_ID = "Lykon/AnyLoRA"
+MODEL_ID = "Lykon/dreamshaper-8"
 VAE_ID = "stabilityai/sd-vae-ft-mse"
 
 
