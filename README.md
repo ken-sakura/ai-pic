@@ -1,9 +1,9 @@
 # Image Generation Toolkit (完全ローカルモデル参照版)
 
-Stable Diffusion 1.5 (AnyLoRA + SD-VAE) を用いた、**完全ローカル・オフライン完結型のバッチ画像生成ツールキット**です。
+Stable Diffusion 1.5 (**DreamShaper 8** + SD-VAE) を用いた、**完全ローカル・オフライン完結型のバッチ画像生成ツールキット**です。
 
-推論スクリプトは外部ネットワークへの通信を一切遮断したオフラインモードで動作し、ローカルにダウンロードされたキャッシュモデルのみを参照します。  
-タスク設定用の JSON ファイルによりプロンプトや解像度、シード値を管理でき、複数ターミナルや tmux による並行バッチ生成にも対応しています。
+推論スクリプトは外部ネットワークへの通信を遮断したオフラインモードで動作し、ローカルにダウンロードされたキャッシュモデルのみを参照します。  
+設定用の JSON ファイルは **モジュール構造化フォーマット**（共通画質・キャラ設定・背景・各ポーズの分離管理）に対応しており、キャラクターの一貫性を保ちながら多彩なポーズやバリエーションを効率的にバッチ生成できます。
 
 ---
 
@@ -12,11 +12,10 @@ Stable Diffusion 1.5 (AnyLoRA + SD-VAE) を用いた、**完全ローカル・�
 ```text
 .
 ├── configs/                   # 画像生成タスク設定ファイル (JSON)
-│   ├── tasks.json             # 標準・キャラクター生成タスク設定例
-│   └── back.json              # 1920×1080背景生成タスク設定例
+│   ├── tasks.json             # キャラクター設定1: ピンクボブ女騎士 (5ポーズ)
+│   └── tasks2.json            # キャラクター設定2: 白髪の大人の魔道士 (5ポーズ)
 ├── outputs/                   # 生成画像の出力先ディレクトリ (.gitkeep)
-├── generate.py                # メイン画像生成スクリプト
-├── generate_background.py     # 1920×1080 背景画像生成特化スクリプト
+├── generate.py                # メイン画像生成スクリプト (バッチ生成・オフライン実行)
 ├── download_models.py         # モデル事前ダウンロード＆キャッシュ検証スクリプト
 ├── requirements.txt           # Python依存パッケージ一覧
 ├── .gitignore                 # Git管理除外設定
@@ -44,7 +43,7 @@ pip install -r requirements.txt
 
 ## 📥 モデルの事前ダウンロード（重要）
 
-本ツールキットの生成スクリプト（`generate.py`, `generate_background.py`）は、セキュリティと再現性のため **完全オフラインモード** (`HF_HUB_OFFLINE=1`, `local_files_only=True`) で動作します。  
+本ツールキットの生成スクリプト（`generate.py`）は、セキュリティと再現性のため **完全オフラインモード** (`HF_HUB_OFFLINE=1`, `local_files_only=True`) で動作します。  
 **初回の画像生成前に、必ずローカルへモデルをダウンロードしてください。**
 
 ### 方法 A: 付属のダウンロードスクリプトを使用（推奨）
@@ -55,123 +54,117 @@ pip install -r requirements.txt
 python download_models.py
 ```
 
-- **ダウンロード対象**:
-  - ベースモデル: `Lykon/AnyLoRA`
+- **デフォルトのダウンロード対象**:
+  - ベースモデル: `Lykon/dreamshaper-8`
   - VAE: `stabilityai/sd-vae-ft-mse`
 - 必要なファイルのみを効率的にダウンロードするため、無駄なストレージを消費しません。
 
 ### 方法 B: `huggingface-cli` コマンドで個別にダウンロード
 
-ターミナルから直接 `huggingface-cli` を使用してダウンロードすることも可能です。
-
 ```bash
-# AnyLoRA モデルのダウンロード
-huggingface-cli download Lykon/AnyLoRA
+# DreamShaper 8 モデルのダウンロード
+huggingface-cli download Lykon/dreamshaper-8
 
 # SD-VAE のダウンロード
 huggingface-cli download stabilityai/sd-vae-ft-mse
 ```
 
-### 📂 モデルの保存場所と完全オフライン環境への移行
+### 📂 モデルの保存場所とオフラインマシンへの移行
 
 - ダウンロードされたモデルは、ユーザーディレクトリのキャッシュに格納されます。
   - **保存先パス**: `~/.cache/huggingface/hub/`
-    - `models--Lykon--AnyLoRA/`
+    - `models--Lykon--dreamshaper-8/`
     - `models--stabilityai--sd-vae-ft-mse/`
-- **オフラインマシンへ移行する場合**:
-  上記フォルダをアーカイブ（zip/tar）して移行先マシンの `~/.cache/huggingface/hub/` に展開するだけで、完全にインターネット接続のない環境でも動作します。
-
-### 🔄 別のモデルを使用したい場合
-
-1. 新しいモデルをローカルキャッシュにダウンロード:
-   ```bash
-   python download_models.py --model-id <HuggingFaceリポジトリID>
-   ```
-2. `generate.py` や `generate_background.py` 内の `MODEL_ID` 定数を変更してください。
+- **完全スタンドアロン環境へ移行する場合**:  
+  上記フォルダをアーカイブ（zip/tar）して移行先マシンの `~/.cache/huggingface/hub/` に展開するだけで、インターネット接続のない環境でも動作します。
 
 ---
 
 ## 🎨 使い方
 
-### 1. 標準画像生成 (`generate.py`)
+### 画像バッチ生成 (`generate.py`)
 
-キャラクターや汎用イラストを生成するスクリプトです。Euler a (Euler Ancestral) サンプラーを採用し、アニメ調イラストを高品質に生成します。
+Euler a (Euler Ancestral) サンプラーを採用し、構図とディテールに優れたイラストを高速生成します。
 
 ```bash
-# デフォルト設定 (configs/tasks.json) で生成
+# 1. デフォルト設定 (configs/tasks.json) で生成
 python generate.py
 
-# 任意の設定JSONファイルを指定して実行
-python generate.py configs/my_task.json
+# 2. 別の設定ファイルを指定して生成 (例: tasks2.json)
+python generate.py configs/tasks2.json
 
-# 出力先ディレクトリやデバイスの明示指定
+# 3. 出力先ディレクトリや実行デバイスを明示指定
 python generate.py configs/tasks.json -o custom_outputs/ --device cuda
 ```
 
-#### 主な引数オプション
+#### コマンドライン引数
 - `task_file` (位置引数) または `-f / --config / --task-file`: 読み込む設定 JSON のパス (デフォルト: `configs/tasks.json`)
 - `-o / --output-dir`: 生成画像の保存先ディレクトリ (デフォルト: `outputs/`)
-- `--device {auto,cuda,cpu}`: 実行デバイス (デフォルト: `auto`。GPU があれば自動で CUDA/FP16、なければ CPU/FP32)
+- `--device {auto,cuda,cpu}`: 実行デバイス (デフォルト: `auto`。CUDA環境があれば自動で GPU/FP16、なければ CPU/FP32 で動作)
 
 ---
 
-### 2. 1920×1080 背景画像生成特化 (`generate_background.py`)
+## ⚙️ タスク設定ファイル (*.json) の特徴と仕様
 
-デスクトップ壁紙や配信用背景などに適した **1920×1080 高解像度背景** を生成するスクリプトです。
+本ツールキットの設定ファイルは、プロンプトのメンテナンス性と再現性を高めるため、**モジュール構造化フォーマット**（推奨）および従来の**フラットリスト形式**の両方に対応しています（`generate.py` が自動判別）。
 
-```bash
-# デフォルト設定 (configs/back.json) で生成
-python generate_background.py
+### 1. モジュール構造化フォーマット（推奨）
 
-# 任意の設定JSONファイルを指定して実行
-python generate_background.py configs/custom_back.json
+キャラクターの容姿や背景、共通のネガティブ要素を分離して定義できるため、**「同一キャラクターの複数ポーズ展開」**が極めて直感的に作成できます。
+
+```json
+{
+  "common_base": {
+    "positive_anatomy": "masterpiece, best quality, (anatomically correct human anatomy:1.2), ...",
+    "negative_anatomy": "((bad anatomy, deformed, mutated, malformed:1.4)), ((bad hands:1.4)), ..."
+  },
+  "character_settings": {
+    "subject": "1girl, solo, battle mage, full body composition",
+    "face_hair": "slender Japanese beauty, (long white hair, side-swept loose single braid:1.25), ...",
+    "armor_body": "wearing modest ash-white sleeveless tunic, high neck collar, elegant light grey open long robe, ...",
+    "negative_armor": "cleavage, deep neckline, bare midriff, see-through, sheer clothing, revealing clothes"
+  },
+  "background_setting": {
+    "positive": "ancient gothic stone ruins, night sky, cold moonlight, sharp focus, 8k",
+    "negative": "bright daylight, sunny, modern city, blurry background"
+  },
+  "tasks": [
+    {
+      "id": "pose01_levitation",
+      "pose": {
+        "action": "(floating mid-air, dynamic levitation pose:1.2), flowing robe",
+        "expression": "(calm focused gaze, serene dignified smile:1.15)"
+      },
+      "custom_negative": "stiff posture, standing on ground",
+      "output_file": "pose01_levitation.png",
+      "width": 512,
+      "height": 912,
+      "steps": 28,
+      "guidance_scale": 8.0,
+      "seed": 8001
+    }
+  ]
+}
 ```
 
-#### 背景特化スクリプトの特長
-- **構図破綻の防止 & 低メモリ動作**:  
-  SD 1.5 の学習解像度に近い `768×432` で構図・光・質感を生成した後、高品質 **Lanczos リサンプリング** で `1920×1080` へアップスケールします。CPU 環境でもメモリ消費 3〜4GB 前後で軽快に動作します。
-- **高精細サンプラー**:  
-  建築・自然・直線構造をシャープに描画する `DPMSolverMultistepScheduler` (DPM++ 2M Karras) を採用。
-- **メモリピーク抑制**:  
-  VAE Tiling / Slicing および Attention Slicing を標準で有効化。
-
-#### 主な引数オプション
-- `task_file` (位置引数) または `-f / --config`: 設定 JSON のパス (デフォルト: `configs/back.json`)
-- `-o / --output-dir`: 保存先ディレクトリ (デフォルト: `outputs/`)
-- `--device {auto,cuda,cpu}`: 実行デバイス (デフォルト: `auto`)
-- `--gen-width`, `--gen-height`: ベース生成解像度 (デフォルト: `768`, `432`)
-- `--target-width`, `--target-height`: 最終出力解像度 (デフォルト: `1920`, `1080`)
+#### 構造のメリット
+- **プロンプトの重複排除**: 画質タグやキャラ設定をタスクごとにコピペする必要がありません。
+- **結合の自動化**: `generate.py` が自動的に `[共通画質] + [キャラ基本情報] + [背景] + [個別ポーズ・表情]` を連結して最終プロンプトを構築します。
+- **ネガティブの多重防護**: 解剖学的破綻の排除 (`negative_anatomy`)、衣装・コンプライアンス違反防止 (`negative_armor`)、構図固有の除外タグ (`custom_negative`) が安全に合成されます。
 
 ---
 
-### 🪟 並行バッチ生成（tmux / マルチターミナル）
+### 2. 従来型フラットリスト形式
 
-複数の設定ファイル（例: `tasks_a.json`, `tasks_b.json`）を作成し、別々のターミナルで実行することで、バッチ生成を並行処理できます。
-
-```bash
-# ターミナル 1
-python generate.py configs/tasks_group1.json
-
-# ターミナル 2
-python generate.py configs/tasks_group2.json
-```
-
-> [!TIP]
-> 各設定ファイル内で指定する `output_file`（出力ファイル名）が重複しないように設定してください。
-
----
-
-## ⚙️ タスク設定ファイル (*.json) の仕様
-
-`configs/` 配下の JSON ファイルは、タスクオブジェクトの配列として記述します。
+シンプルな 1 枚ごとのプロンプト指定も引き続きサポートしています。
 
 ```json
 [
   {
-    "id": "01_sample_girl",
-    "prompt": "masterpiece, best quality, ultra-detailed, 1girl, solo, silver hair, neon street, anime illustration",
-    "negative_prompt": "(worst quality, low quality:1.4), (bad anatomy:1.2), blurry, deformed, text, watermark",
-    "output_file": "01_sample_girl.png",
+    "id": "sample_task",
+    "prompt": "masterpiece, best quality, 1girl, solo, silver hair, anime illustration",
+    "negative_prompt": "(worst quality, low quality:1.4), (bad anatomy:1.2), blurry",
+    "output_file": "sample_task.png",
     "width": 512,
     "height": 768,
     "steps": 24,
@@ -181,45 +174,20 @@ python generate.py configs/tasks_group2.json
 ]
 ```
 
-| キー名 | 型 | 説明 |
-|---|---|---|
-| `id` | string | タスクの識別名（ログ出力用） |
-| `prompt` | string | ポジティブプロンプト |
-| `negative_prompt` | string | ネガティブプロンプト |
-| `output_file` | string | 出力画像ファイル名（`outputs/` 配下に保存） |
-| `width` | int | 生成幅 (px) |
-| `height` | int | 生成高さ (px) |
-| `steps` | int | 推論ステップ数 (推奨: 20〜28) |
-| `guidance_scale` | float | CFGスケール。プロンプトへの忠実度 (推奨: 6.0〜7.5) |
-| `seed` | int | 乱数シード (`-1` を指定するとランダム) |
-
 ---
 
-## 🔧 ハードウェア要件とデバイス動作
+## 🔧 ハードウェア要件と動作仕様
 
 - **GPU (NVIDIA CUDA)**:
-  - CUDA が検出された場合、自動的に `cuda` デバイスおよび `torch.float16`（半精度）で動作します。VRAM 4GB 以上の GPU で快適に動作します。
+  - CUDA が検出された場合、自動的に `cuda` デバイスおよび `torch.float16`（半精度）で動作します。VRAM 4GB〜8GB 程度で快適に動作します。
 - **CPU 環境**:
   - CUDA がない場合、自動的に `cpu` デバイスおよび `torch.float32` で安全にフォールバックします。
-  - Attention Slicing と VAE Tiling/Slicing により、一般的なノート PC や省メモリ環境でも OOM（メモリ不足）を起こさず完走します。
-- **明示的な指定**:
-  - 引数 `--device cpu` または `--device cuda` を指定することで、強制的にデバイスを固定できます。
-
----
-
-## ❓ トラブルシューティング
-
-### Q. `LocalEntryNotFoundError` または `Cannot find ... in local cache` エラーが出る
-**原因**: スクリプトが完全ローカルモードで動作しているため、ローカルキャッシュにモデルが存在しません。  
-**解決策**: インターネット接続を確認し、まず `python download_models.py` を実行してモデルをダウンロードしてください。
-
-### Q. 出力画像の顔や手足が崩れる
-- `negative_prompt` に `(bad anatomy:1.2), (bad hands:1.2), deformed` 等を追加してください。
-- `steps` を `24` 前後、`guidance_scale` を `6.5〜7.0` に調整してください。
-- ベース解像度は極端に大きくせず、縦長なら `512×768`、横長なら `768×512` や `768×432` など、SD 1.5 の基本比率に合わせることをおすすめします。
+  - Attention Slicing が標準有効化されているため、省メモリ環境でも OOM（メモリ不足）を起こさず安定して完走します。
+- **メモリ管理**:
+  - 各タスクの生成ごとにガベージコレクション (`gc.collect`) および CUDA キャッシュ解放 (`torch.cuda.empty_cache`) を自動実行します。
 
 ---
 
 ## 📄 ライセンス
 本リポジトリのスクリプトコードは MIT ライセンスです。  
-※ 生成モデル（AnyLoRA 等）および生成物の取り扱いについては、各モデルのライセンス（CreativeML Open RAIL-M 等）に準拠してください。
+※ 生成モデル（DreamShaper 8 等）および生成物の取り扱いについては、各モデルのライセンス（CreativeML Open RAIL-M 等）に準拠してください。
