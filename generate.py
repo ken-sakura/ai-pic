@@ -2,7 +2,7 @@
 """
 generate.py
 Stable Diffusion (AnyLoRA + SD-VAE) を用いたローカル完結型のバッチ画像生成スクリプト。
-設定JSONファイルに基づいて複数の画像生成タスクを連続実行します。
+構造化 JSON、または従来のフラットな JSON リストに基づいて複数の画像生成タスクを連続実行します。
 """
 
 import argparse
@@ -11,13 +11,14 @@ import json
 import os
 import sys
 from pathlib import Path
+from typing import Any, Dict, List, Tuple
 
 # 完全にローカルキャッシュ・ローカルファイルのみを参照するようオフラインモードを設定
 os.environ["HF_HUB_OFFLINE"] = "1"
 os.environ["TRANSFORMERS_OFFLINE"] = "1"
 
 import torch
-from diffusers import AutoencoderKL, StableDiffusionPipeline, EulerAncestralDiscreteScheduler
+from diffusers import AutoencoderKL, EulerAncestralDiscreteScheduler, StableDiffusionPipeline
 
 # パス定義
 BASE_DIR = Path(__file__).resolve().parent
@@ -34,7 +35,6 @@ def resolve_task_file(user_path: str = None) -> Path:
     if user_path:
         p = Path(user_path)
         if not p.is_absolute():
-            # カレントディレクトリまたはBASE_DIR基準で探索
             if p.exists():
                 return p
             p_base = BASE_DIR / user_path
@@ -85,6 +85,79 @@ def parse_args():
     return parser.parse_args()
 
 
+def build_prompts_from_task(raw_data: Any) -> List[Dict[str, Any]]:
+    """
+    JSON データから正規化されたタスクリストを生成する。
+    従来のフラットなリスト形式と、モジュール構造化形式の両方に対応。
+    """
+    # 従来の形式: 最上位がリストの場合
+    if isinstance(raw_data, list):
+        return raw_data
+
+    # 構造化形式: 最上位がオブジェクトで 'tasks' キーを含む場合
+    if isinstance(raw_data, dict) and "tasks" in raw_data:
+        common_base = raw_data.get("common_base", {})
+        char_settings = raw_data.get("character_settings", {})
+        bg_settings = raw_data.get("background_setting", {})
+
+        # 共通ポジティブブロックの組み立て
+        pos_base_parts = [
+            common_base.get("positive_anatomy"),
+            char_settings.get("subject"),
+            char_settings.get("face_hair"),
+            char_settings.get("armor_body"),
+            bg_settings.get("positive"),
+        ]
+        base_pos_tokens = [p.strip() for p in pos_base_parts if p and str(p).strip()]
+
+        # 共通ネガティブブロックの組み立て
+        neg_base_parts = [
+            common_base.get("negative_anatomy"),
+            char_settings.get("negative_armor"),
+            bg_settings.get("negative"),
+        ]
+        base_neg_tokens = [p.strip() for p in neg_base_parts if p and str(p).strip()]
+
+        normalized_tasks = []
+        for task in raw_data["tasks"]:
+            current = dict(task)
+
+            # ポーズ・表情情報の結合
+            pose_obj = current.get("pose", {})
+            task_pos_parts = []
+            if isinstance(pose_obj, dict):
+                if pose_obj.get("action"):
+                    task_pos_parts.append(pose_obj["action"].strip())
+                if pose_obj.get("expression"):
+                    task_pos_parts.append(pose_obj["expression"].strip())
+            elif isinstance(pose_obj, str) and pose_obj.strip():
+                task_pos_parts.append(pose_obj.strip())
+
+            # 既存の 'prompt' が直接指定されている場合も拾う
+            if current.get("prompt"):
+                task_pos_parts.append(current["prompt"].strip())
+
+            # 全ポジティブ要素を結合
+            full_pos_list = base_pos_tokens + task_pos_parts
+            current["prompt"] = ", ".join(full_pos_list)
+
+            # 個別ネガティブの結合
+            task_neg_parts = []
+            if current.get("custom_negative"):
+                task_neg_parts.append(current["custom_negative"].strip())
+            if current.get("negative_prompt"):
+                task_neg_parts.append(current["negative_prompt"].strip())
+
+            full_neg_list = base_neg_tokens + task_neg_parts
+            current["negative_prompt"] = ", ".join(full_neg_list) if full_neg_list else None
+
+            normalized_tasks.append(current)
+
+        return normalized_tasks
+
+    raise ValueError("Invalid JSON format. Expected a list of tasks or an object with a 'tasks' array.")
+
+
 def main():
     args = parse_args()
     task_file_path = resolve_task_file(args.task_file_opt or args.task_file)
@@ -96,7 +169,13 @@ def main():
 
     print(f"Loading task configuration from: {task_file_path}")
     with open(task_file_path, "r", encoding="utf-8") as f:
-        tasks = json.load(f)
+        raw_config = json.load(f)
+
+    try:
+        tasks = build_prompts_from_task(raw_config)
+    except Exception as e:
+        print(f"[Error] Failed to parse tasks: {e}", file=sys.stderr)
+        sys.exit(1)
 
     output_dir = Path(args.output_dir)
     output_dir.mkdir(parents=True, exist_ok=True)
@@ -145,12 +224,13 @@ def main():
         print(f"\n[{i}/{len(tasks)}] Generating: {task_id}")
 
         width = task.get("width", 512)
-        height = task.get("height", 768)
-        steps = task.get("steps", 22)
-        scale = task.get("guidance_scale", 6.5)
+        height = task.get("height", 912)
+        steps = task.get("steps", 28)
+        scale = task.get("guidance_scale", 8.0)
         seed = task.get("seed", -1)
 
         print(f"       Size: {width}x{height} | Steps: {steps} | Scale: {scale} | Seed: {seed}")
+        print(f"       Prompt Preview : {task['prompt'][:80]}...")
 
         generator = torch.Generator(device).manual_seed(seed) if seed != -1 else None
 

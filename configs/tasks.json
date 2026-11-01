@@ -1,112 +1,32 @@
-[
-  {
-    "id": "01_cyberpunk_agent",
-    "prompt": "masterpiece, best quality, ultra-detailed, 1girl, solo, cool, sharp gaze, looking at viewer, athletic build, toned abs, fit body, silver hair, neon cyan highlights, undercut, asymmetrical bob, wearing techwear cropped jacket, black crop top, tech cargo pants, combat boots, rainy night city, neon signs, cyberpunk street, puddles with reflection, cinematic lighting, anime illustration",
-    "negative_prompt": "(worst quality, low quality:1.4), (bad anatomy:1.2), (bad hands:1.2), blurry, deformed, ugly, extra limbs, missing limbs, text, watermark, signature",
-    "output_file": "01_cyberpunk_agent.png",
-    "width": 512,
-    "height": 768,
-    "steps": 24,
-    "guidance_scale": 7.0,
-    "seed": 1001
+{
+  "common_base": {
+    "positive_anatomy": "masterpiece, best quality, (anatomically correct human anatomy:1.2), (accurate body proportions:1.2), (five fingers per hand, anatomically correct hands, well-formed finger joints:1.2), (symmetrical facial features:1.1)",
+    "negative_anatomy": "((bad anatomy, deformed, mutated, malformed:1.4)), ((bad hands, deformed fingers, extra fingers, missing fingers, fused fingers, mutated hands, poorly drawn hands, six fingers, less than five fingers, extra digits, broken fingers:1.4)), ((extra limbs, missing limbs, disconnected limbs, floating limbs:1.4)), ((poorly drawn face, asymmetrical eyes, gross proportions, elongated neck:1.3)), blurry, low quality"
   },
-  {
-    "id": "02_executive_hitwoman",
-    "prompt": "masterpiece, best quality, ultra-detailed, 1girl, solo, cool, cold expression, sharp eyes, looking at viewer, tall, slender body, long legs, raven black hair, straight long hair, hime cut bangs, wearing tailored black suit, white dress shirt, slim black tie, black leather gloves, skyscraper penthouse at night, glass window, city lights bokeh, moody lighting, noir atmosphere, anime illustration",
-    "negative_prompt": "(worst quality, low quality:1.4), (bad anatomy:1.2), (bad hands:1.2), blurry, deformed, ugly, extra limbs, missing limbs, text, watermark, signature",
-    "output_file": "02_executive_hitwoman.png",
-    "width": 512,
-    "height": 768,
-    "steps": 24,
-    "guidance_scale": 7.0,
-    "seed": 1002
+  "character_settings": {
+    "subject": "1girl, battle-hardened female knight, waist-up composition",
+    "face_hair": "thin eyebrows, red bob hair, messy hair, (clear pretty face, clean aesthetic:1.2)",
+    "armor_body": "(flat matte black breastplate:1.3), non-reflective dark steel armor, scars on collarbone",
+    "negative_armor": "nipples, specular breast highlights, circular highlights on chest, boobplate, fur collar, shiny pristine armor"
   },
-  {
-    "id": "03_modern_samurai",
-    "prompt": "masterpiece, best quality, ultra-detailed, 1girl, solo, cool, intense focus, fierce gaze, lean muscular body, agile physique, jet black hair, high ponytail, swept bangs, loose strands, wearing modern samurai outfit, dark haori coat, white sarashi chest wrap, black hakama pants, holding katana, moonlight, bamboo forest, wind blowing leaves, dramatic shadow, anime illustration",
-    "negative_prompt": "(worst quality, low quality:1.4), (bad anatomy:1.2), (bad hands:1.2), blurry, deformed, ugly, extra limbs, missing limbs, text, watermark, signature",
-    "output_file": "03_modern_samurai.png",
-    "width": 512,
-    "height": 768,
-    "steps": 24,
-    "guidance_scale": 7.0,
-    "seed": 1003
+  "background_setting": {
+    "positive": "ruined gothic cathedral interior, shattered stained glass fragments, imposing stone cross right behind, cold moonlight, sharp focus, 8k",
+    "negative": "bright daylight, colorful background"
   },
-  {
-    "id": "04_tactical_operator",
-    "prompt": "masterpiece, best quality, ultra-detailed, 1girl, solo, cool, stoic expression, serious look, muscular build, defined biceps, strong frame, ash blonde hair, textured pixie cut, messy short hair, wearing tactical vest, plate carrier, black combat shirt, cargo pants, holster, ruined battlefield, smoke, embers, dramatic backlight, military aesthetic, anime illustration",
-    "negative_prompt": "(worst quality, low quality:1.4), (bad anatomy:1.2), (bad hands:1.2), blurry, deformed, ugly, extra limbs, missing limbs, text, watermark, signature",
-    "output_file": "04_tactical_operator.png",
-    "width": 512,
-    "height": 768,
-    "steps": 24,
-    "guidance_scale": 7.0,
-    "seed": 1004
-  },
-  {
-    "id": "05_biker_rebel",
-    "prompt": "masterpiece, best quality, ultra-detailed, 1girl, solo, cool, confident smirk, piercing gaze, hourglass figure, curvy, voluptuous, wide hips, dark crimson hair, messy wavy medium hair, voluminous locks, wearing black leather biker jacket, tight leather pants, black leather boots, studded choker, sitting on heavy motorcycle, highway tunnel at night, speed light trails, rebellious aura, anime illustration",
-    "negative_prompt": "(worst quality, low quality:1.4), (bad anatomy:1.2), (bad hands:1.2), blurry, deformed, ugly, extra limbs, missing limbs, text, watermark, signature",
-    "output_file": "05_biker_rebel.png",
-    "width": 512,
-    "height": 768,
-    "steps": 24,
-    "guidance_scale": 7.0,
-    "seed": 1005
-  },
-  {
-    "id": "06_gothic_necromancer",
-    "prompt": "masterpiece, best quality, ultra-detailed, 1girl, solo, cool, cold aloof gaze, subtle sinister smile, petite, delicate slender, frail body, platinum white hair, wavy low twintails, dark gothic corset dress, ornate dark mage robe, torn cape, floating spellbook, glowing blue soul flames, ancient ruined throne room, dark fantasy, eerie mystical atmosphere, anime illustration",
-    "negative_prompt": "(worst quality, low quality:1.4), (bad anatomy:1.2), (bad hands:1.2), blurry, deformed, ugly, extra limbs, missing limbs, text, watermark, signature",
-    "output_file": "06_gothic_necromancer.png",
-    "width": 512,
-    "height": 768,
-    "steps": 24,
-    "guidance_scale": 7.0,
-    "seed": 1006
-  },
-  {
-    "id": "07_mecha_engineer",
-    "prompt": "masterpiece, best quality, ultra-detailed, 1girl, solo, cool, daring grin, fearless eyes, curvy athletic, thick thighs, healthy sturdy build, auburn reddish-brown hair, side cornrows, high messy bun, wearing unzipped boiler suit tied around waist, ribbed grey tank top, heavy tool belt, welding goggles on forehead, scifi hangar, giant robot leg in background, sparks, industrial workshop, anime illustration",
-    "negative_prompt": "(worst quality, low quality:1.4), (bad anatomy:1.2), (bad hands:1.2), blurry, deformed, ugly, extra limbs, missing limbs, text, watermark, signature",
-    "output_file": "07_mecha_engineer.png",
-    "width": 512,
-    "height": 768,
-    "steps": 24,
-    "guidance_scale": 7.0,
-    "seed": 1007
-  },
-  {
-    "id": "08_urban_street_dancer",
-    "prompt": "masterpiece, best quality, ultra-detailed, 1girl, solo, cool, defiant expression, dynamic stance, compact agile frame, fit petite, flat chest, bright pink hair, double space buns, messy loose strands, wearing oversized black tech hoodie, distressed denim shorts, fishnet stockings, high-top sneakers, holding spray paint can, vibrant graffiti wall, underpass, urban lighting, anime illustration",
-    "negative_prompt": "(worst quality, low quality:1.4), (bad anatomy:1.2), (bad hands:1.2), blurry, deformed, ugly, extra limbs, missing limbs, text, watermark, signature",
-    "output_file": "08_urban_street_dancer.png",
-    "width": 512,
-    "height": 768,
-    "steps": 24,
-    "guidance_scale": 7.0,
-    "seed": 1008
-  },
-  {
-    "id": "09_noble_paladin",
-    "prompt": "masterpiece, best quality, ultra-detailed, 1girl, solo, cool, noble dignified expression, calm resolute eyes, statuesque, well-proportioned, athletic feminine frame, golden blonde hair, graduated angular bob cut, wearing polished silver plate armor, white and gold cape, ornate breastplate, gauntlets, resting hands on greatsword hilt, grand gothic cathedral, light rays through stained glass, dust particles, holy aura, anime illustration",
-    "negative_prompt": "(worst quality, low quality:1.4), (bad anatomy:1.2), (bad hands:1.2), blurry, deformed, ugly, extra limbs, missing limbs, text, watermark, signature",
-    "output_file": "09_noble_paladin.png",
-    "width": 512,
-    "height": 768,
-    "steps": 24,
-    "guidance_scale": 7.0,
-    "seed": 1009
-  },
-  {
-    "id": "10_femme_fatale",
-    "prompt": "masterpiece, best quality, ultra-detailed, 1girl, solo, cool, alluring mysterious gaze, dangerous charm, tall curvy, toned hourglass, mature feminine body, deep violet purple hair, side-swept long wavy hair, wearing backless crimson evening gown, high leg slit, black stiletto heels, thigh holster with handgun, luxury casino balcony, night breeze, champagne glass on railing, opulent nightscape, anime illustration",
-    "negative_prompt": "(worst quality, low quality:1.4), (bad anatomy:1.2), (bad hands:1.2), blurry, deformed, ugly, extra limbs, missing limbs, text, watermark, signature",
-    "output_file": "10_femme_fatale.png",
-    "width": 512,
-    "height": 768,
-    "steps": 24,
-    "guidance_scale": 7.0,
-    "seed": 1010
-  }
-]
+  "tasks": [
+    {
+      "id": "knight_pose01_peace_seed7001",
+      "pose": {
+        "action": "(double peace sign pose, v sign with both hands:1.15)",
+        "expression": "(cheerful bright open-mouth smile, big happy grin:1.2), crimson red eyes"
+      },
+      "custom_negative": "melancholic, sad, frowning, horror, creepy, zombie, gore",
+      "output_file": "knight_pose01_peace_seed7001.png",
+      "width": 512,
+      "height": 912,
+      "steps": 28,
+      "guidance_scale": 8.0,
+      "seed": 7001
+    }
+      ]
+}
